@@ -1,0 +1,6 @@
+*.[865a]
+*~
+goop
+_obj
+.testdir
+foo.go

@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -ev
+
+make
+
+rm -rf .testdir
+mkdir .testdir
+
+./goop example.go > .testdir/foo.go
+
+cd .testdir
+
+cat > Makefile <<EOF
+include \$(GOROOT)/src/Make.\$(GOARCH)
+
+TARG=foo
+
+GOFILES=\
+	foo.go\
+
+include \$(GOROOT)/src/Make.cmd
+EOF
+
+make
+
+./foo

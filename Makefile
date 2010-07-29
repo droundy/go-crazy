@@ -11,6 +11,8 @@ GOFILES=\
 
 include $(GOROOT)/src/Make.cmd
 
-dummy.go: transform/*.go
+dummy.go: parser/*.go scanner/*.go transform/*.go
+	cd parser && make install
+	cd scanner && make install
 	cd transform && make install
 	echo package main > dummy.go

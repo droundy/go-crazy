@@ -1,4 +1,6 @@
 *.[865a]
+?.out
+dummy.go
 *~
 goop
 _obj

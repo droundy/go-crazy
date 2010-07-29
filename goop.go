@@ -10,6 +10,7 @@ import (
 	"go/parser"
 	"go/ast"
 	"go/printer"
+	"github.com/droundy/goop/transform"
 )
 
 const (
@@ -113,7 +114,7 @@ func main() {
 	
 	
 	//fmt.Println("AST is...")
-	newast := Walk(MyVisitor(bytes), fileast)
+	newast := transform.Walk(MyVisitor(bytes), fileast)
 	printer.Fprint(os.Stdout, newast)
 }
 
@@ -123,8 +124,8 @@ func (v MyVisitor) Visit(node interface{}) interface{} {
 	case *ast.BinaryExpr:
 		if v[n.OpPos.Offset-1] == '.' {
 			//fmt.Println("I found a binary expression!")
-			newX := Walk(v, n.X).(ast.Expr)
-			newY := Walk(v, n.Y).(ast.Expr)
+			newX := transform.Walk(v, n.X).(ast.Expr)
+			newY := transform.Walk(v, n.Y).(ast.Expr)
 			return &ast.CallExpr{
 				&ast.SelectorExpr{newX, ast.NewIdent(tok2meth(n.Op))},
 				n.Pos(),

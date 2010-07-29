@@ -7,6 +7,10 @@ TARG=goop
 
 GOFILES=\
 	goop.go\
-	modifywalk.go\
+	dummy.go\
 
 include $(GOROOT)/src/Make.cmd
+
+dummy.go: transform/*.go
+	cd transform && make install
+	echo package main > dummy.go

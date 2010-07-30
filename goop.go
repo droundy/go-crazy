@@ -46,6 +46,15 @@ func (v MyVisitor) Visit(node interface{}) interface{} {
 				[]ast.Expr{newY},
 				n.Pos(),
 			}
+		} else if v[n.OpPos.Offset] == '*' && v[n.OpPos.Offset+1] == '.' {
+			newX := transform.Walk(v, n.X).(ast.Expr)
+			newY := transform.Walk(v, n.Y).(ast.Expr)
+			return &ast.CallExpr{
+				&ast.SelectorExpr{newY, ast.NewIdent("_mul_dot")},
+				n.Pos(),
+				[]ast.Expr{newX},
+				n.Pos(),
+			}
 		}
 	}
 	return nil

@@ -2003,7 +2003,11 @@ func (p *parser) parseFuncDecl() *ast.FuncDecl {
 	ident := ast.NewIdent("foo")
 	switch p.tok {
 	case token.ADD, token.ADD_ASSIGN, token.SUB, token.SUB_ASSIGN, token.MUL, token.MUL_ASSIGN, token.QUO, token.QUO_ASSIGN:
-		ident = ast.NewIdent(MungeOperator(p.tok))
+		if string(p.lit) == "*." {
+			ident = ast.NewIdent("_mul_dot")
+		} else {
+			ident = ast.NewIdent(MungeOperator(p.tok))
+		}
 		p.expect(p.tok) // hokey!
 	default:
 		ident = p.parseIdent(ast.Fun)

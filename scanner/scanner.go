@@ -611,7 +611,7 @@ scanAgain:
 				insertSemi = true
 			}
 		case '*':
-			tok = S.switch2(token.MUL, token.MUL_ASSIGN)
+			tok = S.switch3(token.MUL, token.MUL_ASSIGN, '.', token.MUL)
 		case '/':
 			if S.ch == '/' || S.ch == '*' {
 				// comment

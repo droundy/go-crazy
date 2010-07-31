@@ -579,6 +579,8 @@ scanAgain:
 				case '/':
 					S.next()
 					tok = S.switch2(token.QUO, token.QUO_ASSIGN)
+				default:
+					tok = token.PERIOD
 				}
 			}
 		case ',':

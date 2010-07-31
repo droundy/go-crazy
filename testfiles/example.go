@@ -2,6 +2,8 @@
 
 package main
 
+import "fmt"
+
 type Vec []float64
 
 func (a Vec) .- (b Vec) Vec {
@@ -41,4 +43,5 @@ func main() {
 	if (2 *. x)[0] != 2 {
 		panic("bug")
 	}
+	fmt.Println("Hello world!")
 }

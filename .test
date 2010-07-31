@@ -7,25 +7,16 @@ make
 rm -rf .testdir
 mkdir .testdir
 cd .testdir
-cp ../example.go .
 
-../go-crazy example.go
+for gof in `ls ../testfiles | egrep '\.go$'`; do
+    echo Testing $gof
+    echo cp ../testfiles/$gof .
+    cp ../testfiles/$gof .
+    echo ../go-crazy $gof
+    ../go-crazy $gof
+    if test -f ../testfiles/$gof.sh; then
+        echo bash ../testfiles/$gof.sh
+        bash ../testfiles/$gof.sh
+    fi
+done
 
-grep _dot_sub example-compiled.go
-
-./example
-
-cat > Makefile <<EOF
-include \$(GOROOT)/src/Make.\$(GOARCH)
-
-TARG=foo
-
-GOFILES=\
-	example-compiled.go\
-
-include \$(GOROOT)/src/Make.cmd
-EOF
-
-make
-
-./foo

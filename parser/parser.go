@@ -1293,10 +1293,26 @@ func (p *parser) parseBinaryExpr(prec1 int) ast.Expr {
 	x := p.parseUnaryExpr()
 	for prec := p.tok.Precedence(); prec >= prec1; prec-- {
 		for p.tok.Precedence() == prec {
-			pos, op := p.pos, p.tok
+			pos, op, oplit := p.pos, p.tok, p.lit
 			p.next()
 			y := p.parseBinaryExpr(prec + 1)
-			x = &ast.BinaryExpr{p.checkExpr(x), pos, op, p.checkExpr(y)}
+			if oplit[0] == '.' {
+				x = &ast.CallExpr{
+					&ast.SelectorExpr{p.checkExpr(x), ast.NewIdent(MungeOperator(op))},
+					pos,
+					[]ast.Expr{p.checkExpr(y)},
+					p.pos,
+				}
+			} else if string(oplit) == "*." {
+				x = &ast.CallExpr{
+					&ast.SelectorExpr{p.checkExpr(y), ast.NewIdent("_mul_dot")},
+					pos,
+					[]ast.Expr{p.checkExpr(x)},
+					p.pos,
+				}
+			} else {
+				x = &ast.BinaryExpr{p.checkExpr(x), pos, op, p.checkExpr(y)}
+			}
 		}
 	}
 

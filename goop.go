@@ -6,9 +6,8 @@ import (
 	"io/ioutil"
 	"github.com/droundy/goopt"
 	"github.com/droundy/goop/parser"
-	"go/ast"
 	"go/printer"
-	"github.com/droundy/goop/transform"
+	//"github.com/droundy/goop/transform"
 )
 
 func main() {
@@ -25,13 +24,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
-	
-	//fmt.Println("AST is...")
-	newast := transform.Walk(MyVisitor(bytes), fileast)
-	printer.Fprint(os.Stdout, newast)
+	printer.Fprint(os.Stdout, fileast)
 }
 
+/*
 type MyVisitor []byte
 func (v MyVisitor) Visit(node interface{}) interface{} {
 	switch n := node.(type) {
@@ -59,3 +55,4 @@ func (v MyVisitor) Visit(node interface{}) interface{} {
 	}
 	return nil
 }
+*/

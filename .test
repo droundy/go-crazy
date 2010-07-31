@@ -9,7 +9,9 @@ mkdir .testdir
 cd .testdir
 
 for gof in `ls ../testfiles | egrep '\.go$'`; do
+    echo ======================
     echo Testing $gof
+    echo ======================
     echo cp ../testfiles/$gof .
     cp ../testfiles/$gof .
     echo ../go-crazy $gof
@@ -18,5 +20,7 @@ for gof in `ls ../testfiles | egrep '\.go$'`; do
         echo bash ../testfiles/$gof.sh
         bash ../testfiles/$gof.sh
     fi
+    echo ======================
+    echo Passed $gof
 done
 

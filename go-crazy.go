@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"exec"
-	"io/ioutil"
 	"github.com/droundy/goopt"
 	"github.com/droundy/goop/parser"
 	"go/printer"
@@ -34,10 +33,11 @@ func main() {
 	}
 	filename := goopt.Args[0]
 
-	bytes,err := ioutil.ReadFile(filename)
-
-	fileast,err := parser.ParseFile(filename, bytes, nil, parser.ParseComments)
-	panicon(err)
+	fileast,err := parser.ParseFile(filename, nil, nil, parser.ParseComments)
+	if err != nil {
+		fmt.Println("Parse error:\n", err)
+		os.Exit(1)
+	}
 
 	// Let's create a file containing the parsed code...
 	basename := filename[0:len(filename)-3]
@@ -48,7 +48,10 @@ func main() {
 	out.Close()
 
 	objname := basename+"-compiled."+archnum()
-	panicon(justrun(archnum()+"g", "-o", objname, newfilename))
+	if justrun(archnum()+"g", "-o", objname, newfilename) != nil {
+		fmt.Println("Error compiling", newfilename,"!")
+		os.Exit(1)
+	}
 	panicon(justrun(archnum()+"l", "-o", basename, objname))
 }
 

@@ -3,12 +3,28 @@ package main
 import (
 	"fmt"
 	"os"
+	"exec"
 	"io/ioutil"
 	"github.com/droundy/goopt"
 	"github.com/droundy/goop/parser"
 	"go/printer"
 	//"github.com/droundy/goop/transform"
 )
+
+func panicon(err os.Error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func archnum() string {
+	switch os.Getenv("GOARCH") {
+	case "386": return "3"
+	case "amd64": return "6"
+		// what was the other one called?
+	}
+	return "5"
+}
 
 func main() {
 	goopt.Parse(func() []string { return []string{} })
@@ -21,10 +37,39 @@ func main() {
 	bytes,err := ioutil.ReadFile(filename)
 
 	fileast,err := parser.ParseFile(filename, bytes, nil, parser.ParseComments)
-	if err != nil {
-		panic(err)
+	panicon(err)
+
+	// Let's create a file containing the parsed code...
+	basename := filename[0:len(filename)-3]
+	newfilename := basename+"-compiled.go"
+	out,err := os.Open(newfilename, os.O_WRONLY + os.O_TRUNC + os.O_CREAT, 0644)
+	panicon(err)
+	panicon(printer.Fprint(out, fileast))
+	out.Close()
+
+	objname := basename+"-compiled."+archnum()
+	panicon(justrun(archnum()+"g", "-o", objname, newfilename))
+	panicon(justrun(archnum()+"l", "-o", basename, objname))
+}
+
+func justrun(cmd string, args ...string) os.Error {
+	abscmd,err := exec.LookPath(cmd)
+	if err != nil { return err }
+	
+	cmdargs := make([]string, len(args)+1)
+	cmdargs[0] = cmd
+	for i,a := range args {
+		cmdargs[i+1] = a
 	}
-	printer.Fprint(os.Stdout, fileast)
+	pid, err := exec.Run(abscmd, cmdargs, nil, "",
+		exec.PassThrough, exec.PassThrough, exec.PassThrough)
+	if err != nil { return err }
+	wmsg,err := pid.Wait(0)
+	if err != nil { return err }
+	if wmsg.ExitStatus() != 0 {
+		return os.NewError(cmd+" exited with status "+fmt.Sprint(wmsg.ExitStatus()))
+	}
+	return nil
 }
 
 /*

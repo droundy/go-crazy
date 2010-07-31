@@ -3,10 +3,10 @@
 
 include $(GOROOT)/src/Make.$(GOARCH)
 
-TARG=goop
+TARG=go-crazy
 
 GOFILES=\
-	goop.go\
+	go-crazy.go\
 	dummy.go\
 
 include $(GOROOT)/src/Make.cmd

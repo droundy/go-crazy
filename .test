@@ -6,10 +6,14 @@ make
 
 rm -rf .testdir
 mkdir .testdir
-
-./goop example.go > .testdir/foo.go
-
 cd .testdir
+cp ../example.go .
+
+../go-crazy example.go
+
+grep _dot_sub example-compiled.go
+
+./example
 
 cat > Makefile <<EOF
 include \$(GOROOT)/src/Make.\$(GOARCH)
@@ -17,7 +21,7 @@ include \$(GOROOT)/src/Make.\$(GOARCH)
 TARG=foo
 
 GOFILES=\
-	foo.go\
+	example-compiled.go\
 
 include \$(GOROOT)/src/Make.cmd
 EOF

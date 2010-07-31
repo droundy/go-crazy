@@ -3,6 +3,9 @@
 dummy.go
 *~
 goop
+go-crazy
+example
+*-compiled.go
 _obj
 .testdir
 foo.go

@@ -18,7 +18,7 @@ func panicon(err os.Error) {
 
 func archnum() string {
 	switch os.Getenv("GOARCH") {
-	case "386": return "3"
+	case "386": return "8"
 	case "amd64": return "6"
 		// what was the other one called?
 	}
@@ -48,8 +48,9 @@ func main() {
 	out.Close()
 
 	objname := basename+"-compiled."+archnum()
-	if justrun(archnum()+"g", "-o", objname, newfilename) != nil {
+	if e := justrun(archnum()+"g", "-o", objname, newfilename); e != nil {
 		fmt.Println("Error compiling", newfilename,"!")
+		fmt.Println(e)
 		os.Exit(1)
 	}
 	panicon(justrun(archnum()+"l", "-o", basename, objname))
@@ -57,7 +58,7 @@ func main() {
 
 func justrun(cmd string, args ...string) os.Error {
 	abscmd,err := exec.LookPath(cmd)
-	if err != nil { return err }
+	if err != nil { return os.NewError("Couldn't find "+cmd+": "+err.String()) }
 	
 	cmdargs := make([]string, len(args)+1)
 	cmdargs[0] = cmd

@@ -13,7 +13,7 @@ import (
 	"container/vector"
 	"fmt"
 	"go/ast"
-	"github.com/droundy/goop/scanner"
+	"github.com/droundy/go-crazy/scanner"
 	"go/token"
 )
 

@@ -4,7 +4,7 @@
 
 include $(GOROOT)/src/Make.$(GOARCH)
 
-TARG=github.com/droundy/goop/scanner
+TARG=github.com/droundy/go-crazy/scanner
 GOFILES=\
 	errors.go\
 	scanner.go\

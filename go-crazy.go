@@ -5,9 +5,9 @@ import (
 	"os"
 	"exec"
 	"github.com/droundy/goopt"
-	"github.com/droundy/goop/parser"
+	"github.com/droundy/go-crazy/parser"
 	"go/printer"
-	//"github.com/droundy/goop/transform"
+	//"github.com/droundy/go-crazy/transform"
 )
 
 func panicon(err os.Error) {

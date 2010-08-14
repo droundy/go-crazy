@@ -9,7 +9,7 @@ package parser
 import (
 	"bytes"
 	"go/ast"
-	"github.com/droundy/goop/scanner"
+	"github.com/droundy/go-crazy/scanner"
 	"go/token"
 	"io"
 	"io/ioutil"

@@ -4,7 +4,7 @@
 
 include $(GOROOT)/src/Make.$(GOARCH)
 
-TARG=github.com/droundy/goop/transform
+TARG=github.com/droundy/go-crazy/transform
 GOFILES=\
 	transform.go\
 

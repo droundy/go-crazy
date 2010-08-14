@@ -4,7 +4,7 @@
 
 include $(GOROOT)/src/Make.$(GOARCH)
 
-TARG=github.com/droundy/goop/parser
+TARG=github.com/droundy/go-crazy/parser
 GOFILES=\
 	interface.go\
 	parser.go\

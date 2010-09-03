@@ -33,7 +33,7 @@ func main() {
 	}
 	filename := goopt.Args[0]
 
-	fileast,err := parser.ParseFile(filename, nil, nil, parser.ParseComments)
+	fileast,err := parser.ParseFile(filename, nil, parser.ParseComments)
 	if err != nil {
 		fmt.Println("Parse error:\n", err)
 		os.Exit(1)

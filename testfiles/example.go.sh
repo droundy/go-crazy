@@ -9,7 +9,7 @@ grep _dot_sub example-compiled.go
 ./example | grep 'Hello world!'
 
 cat > Makefile <<EOF
-include \$(GOROOT)/src/Make.\$(GOARCH)
+include \$(GOROOT)/src/Make.inc
 
 TARG=foo
 

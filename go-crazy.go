@@ -10,6 +10,9 @@ import (
 	//"github.com/droundy/go-crazy/transform"
 )
 
+var just_translate = goopt.Flag([]string{"--just-translate"}, []string{},
+	"just build the -compiled.go file", "build and compile and link")
+
 func panicon(err os.Error) {
 	if err != nil {
 		panic(err)
@@ -47,15 +50,17 @@ func main() {
 	panicon(printer.Fprint(out, fileast))
 	out.Close()
 
-	objname := basename+"-compiled."+archnum()
-	if e := justrun(archnum()+"g", "-o", objname, newfilename); e != nil {
-		fmt.Println("Error compiling", newfilename,"!")
-		fmt.Println(e)
-		os.Exit(1)
+	if !*just_translate {
+		objname := basename+"-compiled."+archnum()
+		if e := justrun(archnum()+"g", "-o", objname, newfilename); e != nil {
+			fmt.Println("Error compiling", newfilename,"!")
+			fmt.Println(e)
+			os.Exit(1)
+		}
+		panicon(justrun(archnum()+"l", "-o", basename, objname))
 	}
-	panicon(justrun(archnum()+"l", "-o", basename, objname))
 }
-
+	
 func justrun(cmd string, args ...string) os.Error {
 	abscmd,err := exec.LookPath(cmd)
 	if err != nil { return os.NewError("Couldn't find "+cmd+": "+err.String()) }

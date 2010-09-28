@@ -16,3 +16,10 @@ dummy.go: parser/*.go scanner/*.go transform/*.go
 	cd parser && make install
 	cd transform && make install
 	echo package main > dummy.go
+
+cleanall:
+	make clean
+	rm -f dummy.go
+	cd scanner && make clean
+	cd parser && make clean
+	cd transform && make clean

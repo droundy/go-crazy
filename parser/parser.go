@@ -913,7 +913,10 @@ func (p *parser) parseIndexOrSlice(x ast.Expr) ast.Expr {
 
 	p.expect(token.LBRACK)
 	p.exprLev++
-	index := p.parseExpr()
+	var index ast.Expr
+	if p.tok != token.COLON {
+		index = p.parseExpr()
+	}
 	if p.tok == token.COLON {
 		p.next()
 		var end ast.Expr
@@ -939,8 +942,13 @@ func (p *parser) parseCallOrConversion(fun ast.Expr) *ast.CallExpr {
 	lparen := p.expect(token.LPAREN)
 	p.exprLev++
 	var list vector.Vector
-	for p.tok != token.RPAREN && p.tok != token.EOF {
+	var ellipsis token.Position
+	for p.tok != token.RPAREN && p.tok != token.EOF && !ellipsis.IsValid() {
 		list.Push(p.parseExpr())
+		if p.tok == token.ELLIPSIS {
+			ellipsis = p.pos
+			p.next()
+		}
 		if p.tok != token.COMMA {
 			break
 		}
@@ -949,7 +957,7 @@ func (p *parser) parseCallOrConversion(fun ast.Expr) *ast.CallExpr {
 	p.exprLev--
 	rparen := p.expect(token.RPAREN)
 
-	return &ast.CallExpr{fun, lparen, makeExprList(&list), rparen}
+	return &ast.CallExpr{fun, lparen, makeExprList(&list), ellipsis, rparen}
 }
 
 
@@ -1194,12 +1202,14 @@ func (p *parser) parseBinaryExpr(prec1 int) ast.Expr {
 		for p.tok.Precedence() == prec {
 			pos, op, oplit := p.pos, p.tok, p.lit
 			p.next()
+			var ellipsis token.Position
 			y := p.parseBinaryExpr(prec + 1)
 			if oplit[0] == '.' {
 				x = &ast.CallExpr{
 					&ast.SelectorExpr{p.checkExpr(x), ast.NewIdent(MungeOperator(op))},
 					pos,
 					[]ast.Expr{p.checkExpr(y)},
+					ellipsis,
 					p.pos,
 				}
 			} else if string(oplit) == "*." {
@@ -1207,6 +1217,7 @@ func (p *parser) parseBinaryExpr(prec1 int) ast.Expr {
 					&ast.SelectorExpr{p.checkExpr(y), ast.NewIdent("_mul_dot")},
 					pos,
 					[]ast.Expr{p.checkExpr(x)},
+					ellipsis,
 					p.pos,
 				}
 			} else {

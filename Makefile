@@ -7,6 +7,7 @@ TARG=go-crazy
 
 GOFILES=\
 	go-crazy.go\
+	inliner.go\
 	dummy.go\
 
 include $(GOROOT)/src/Make.cmd

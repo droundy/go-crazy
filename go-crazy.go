@@ -7,11 +7,12 @@ import (
 	"github.com/droundy/goopt"
 	"github.com/droundy/go-crazy/parser"
 	"go/printer"
-	//"github.com/droundy/go-crazy/transform"
 )
 
 var just_translate = goopt.Flag([]string{"--just-translate"}, []string{},
 	"just build the -compiled.go file", "build and compile and link")
+
+var toinline = goopt.Strings([]string{"--inline"}, "FUNC", "specify function to inline")
 
 func panicon(err os.Error) {
 	if err != nil {
@@ -40,6 +41,10 @@ func main() {
 	if err != nil {
 		fmt.Println("Parse error:\n", err)
 		os.Exit(1)
+	}
+
+	for _,fname := range *toinline {
+		fileast = Inline(fileast, fname)
 	}
 
 	// Let's create a file containing the parsed code...
@@ -80,33 +85,3 @@ func justrun(cmd string, args ...string) os.Error {
 	}
 	return nil
 }
-
-/*
-type MyVisitor []byte
-func (v MyVisitor) Visit(node interface{}) interface{} {
-	switch n := node.(type) {
-	case *ast.BinaryExpr:
-		if v[n.OpPos.Offset] == '.' {
-			//fmt.Println("I found a binary expression!")
-			newX := transform.Walk(v, n.X).(ast.Expr)
-			newY := transform.Walk(v, n.Y).(ast.Expr)
-			return &ast.CallExpr{
-				&ast.SelectorExpr{newX, ast.NewIdent(parser.MungeOperator(n.Op))},
-				n.Pos(),
-				[]ast.Expr{newY},
-				n.Pos(),
-			}
-		} else if v[n.OpPos.Offset] == '*' && v[n.OpPos.Offset+1] == '.' {
-			newX := transform.Walk(v, n.X).(ast.Expr)
-			newY := transform.Walk(v, n.Y).(ast.Expr)
-			return &ast.CallExpr{
-				&ast.SelectorExpr{newY, ast.NewIdent("_mul_dot")},
-				n.Pos(),
-				[]ast.Expr{newX},
-				n.Pos(),
-			}
-		}
-	}
-	return nil
-}
-*/

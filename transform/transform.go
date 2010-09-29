@@ -262,7 +262,11 @@ func Walk(v Visitor, node interface{}) (modifiednode interface{}) {
 	case *ast.ValueSpec:
 		n.Doc = walkCommentGroup(v, n.Doc)
 		n.Names = Walk(v, n.Names).([]*ast.Ident)
-		n.Type = Walk(v, n.Type).(ast.Expr)
+		if t := Walk(v, n.Type); t != nil {
+			n.Type = t.(ast.Expr)
+		} else {
+			n.Type = nil
+		}
 		n.Values = Walk(v, n.Values).([]ast.Expr)
 		n.Comment = walkCommentGroup(v, n.Comment)
 

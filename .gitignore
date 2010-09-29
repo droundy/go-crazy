@@ -5,6 +5,8 @@ dummy.go
 goop
 go-crazy
 example
+inline
+*.temp
 *-compiled.go
 _obj
 .testdir
